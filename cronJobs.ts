@@ -29,33 +29,42 @@ const energyByLevel: { [level: number]: number } = {
 };
 
 const resetUserEnergy = async () => {
-  console.log("**Reset User Energy**");
-  const querySnapshot = await getDocs(collection(db, "users"));
-  querySnapshot.forEach(async (userDoc) => {
-    const level = userDoc.data().level;
-    const energy = energyByLevel[level];
-    console.log(userDoc.id, " => ", energy);
+  try {
+    const querySnapshot = await getDocs(collection(db, "users"));
+    querySnapshot.forEach(async (userDoc) => {
+      const level = userDoc.data().level;
+      const energy = energyByLevel[level];
+      console.log(userDoc.id, " => ", energy);
 
-    const userEnergyRef = doc(db, "energies", userDoc.id);
-    const userEnergyDoc = await getDoc(userEnergyRef);
-    if (userEnergyDoc.exists()) {
-      await updateDoc(userEnergyRef, {
-        energy: energy,
-        time: Timestamp.fromDate(new Date()),
-      });
-    } else {
-      await setDoc(
-        userEnergyRef,
-        { energy: energy, time: Timestamp.fromDate(new Date()) },
-        { merge: true }
-      );
-    }
-  });
+      const userEnergyRef = doc(db, "energies", userDoc.id);
+      const userEnergyDoc = await getDoc(userEnergyRef);
+      if (userEnergyDoc.exists()) {
+        await updateDoc(userEnergyRef, {
+          energy: energy,
+          time: Timestamp.fromDate(new Date()),
+        });
+      } else {
+        await setDoc(
+          userEnergyRef,
+          { energy: energy, time: Timestamp.fromDate(new Date()) },
+          { merge: true }
+        );
+      }
+    });
+  } catch (ex) {
+    console.log(ex);
+  }
 };
 
 const initCrons = () => {
   console.log("Init Crons");
-  cron.schedule("0 */2 * * *", resetUserEnergy);
+  cron.schedule("* * * * *", () => {
+    console.log("running a task every minute");
+  });
+  cron.schedule("0 */2 * * *", async () => {
+    console.log("**Reset User Energy**");
+    await resetUserEnergy();
+  });
 };
 
 export default initCrons;
