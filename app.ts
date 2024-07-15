@@ -62,7 +62,7 @@ const html = `
   </head>
   <body>
     <section>
-      Hello from Render!
+      Hello from Teme Coin!
     </section>
   </body>
 </html>
