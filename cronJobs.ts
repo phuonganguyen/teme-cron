@@ -6,6 +6,7 @@ import {
   getDoc,
   getDocs,
   setDoc,
+  Timestamp,
   updateDoc,
 } from "firebase/firestore";
 
@@ -38,14 +39,22 @@ const resetUserEnergy = async () => {
     const userEnergyRef = doc(db, "energies", userDoc.id);
     const userEnergyDoc = await getDoc(userEnergyRef);
     if (userEnergyDoc.exists()) {
-      await updateDoc(userEnergyRef, { energy: energy });
+      await updateDoc(userEnergyRef, {
+        energy: energy,
+        time: Timestamp.fromDate(new Date()),
+      });
     } else {
-      await setDoc(userEnergyRef, { energy: energy }, { merge: true });
+      await setDoc(
+        userEnergyRef,
+        { energy: energy, time: Timestamp.fromDate(new Date()) },
+        { merge: true }
+      );
     }
   });
 };
 
 const initCrons = () => {
+  console.log("Init Crons");
   cron.schedule("0 */2 * * *", resetUserEnergy);
 };
 
