@@ -1,7 +1,14 @@
 import express, { Request, Response } from "express";
 import initCrons from "./cronJobs";
 import db from "./firebase";
-import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 const app = express();
 const port = process.env.PORT || 3001;
 
@@ -28,7 +35,12 @@ const getUsers = async () => {
     console.log(userDoc.id, " => ", userDoc.data());
 
     const userEnergyRef = doc(db, "energies", userDoc.id);
-    await updateDoc(userEnergyRef, { energy: 1000 });
+    const userEnergyDoc = await getDoc(userEnergyRef);
+    if (userEnergyDoc.exists()) {
+      await updateDoc(userEnergyRef, { energy: 1000 });
+    } else {
+      await setDoc(userEnergyRef, { energy: 1000 }, { merge: true });
+    }
   });
 };
 
