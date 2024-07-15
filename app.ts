@@ -27,21 +27,3 @@ server.keepAliveTimeout = 120 * 1000;
 server.headersTimeout = 120 * 1000;
 
 initCrons();
-
-const getUsers = async () => {
-  const querySnapshot = await getDocs(collection(db, "users"));
-  querySnapshot.forEach(async (userDoc) => {
-    // doc.data() is never undefined for query doc snapshots
-    console.log(userDoc.id, " => ", userDoc.data());
-
-    const userEnergyRef = doc(db, "energies", userDoc.id);
-    const userEnergyDoc = await getDoc(userEnergyRef);
-    if (userEnergyDoc.exists()) {
-      await updateDoc(userEnergyRef, { energy: 1000 });
-    } else {
-      await setDoc(userEnergyRef, { energy: 1000 }, { merge: true });
-    }
-  });
-};
-
-getUsers();
