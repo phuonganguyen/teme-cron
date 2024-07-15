@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import initCrons from "./cronJobs";
 import db from "./firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 const app = express();
 const port = process.env.PORT || 3001;
 
@@ -23,9 +23,12 @@ initCrons();
 
 const getUsers = async () => {
   const querySnapshot = await getDocs(collection(db, "users"));
-  querySnapshot.forEach((doc) => {
+  querySnapshot.forEach(async (userDoc) => {
     // doc.data() is never undefined for query doc snapshots
-    console.log(doc.id, " => ", doc.data());
+    console.log(userDoc.id, " => ", userDoc.data());
+
+    const userEnergyRef = doc(db, "energies", userDoc.id);
+    await updateDoc(userEnergyRef, { energy: 1000 });
   });
 };
 
