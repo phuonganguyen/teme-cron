@@ -5,6 +5,8 @@ const port = process.env.PORT || 3001;
 
 app.get("/", (req: Request, res: Response) => res.type("html").send(html));
 
+app.get("/healthz", (req: Request, res: Response) => res.status(200).send('Healthy!');;
+
 const server = app
   .listen(port, () => console.log(`Example app listening on port ${port}!`))
   .on("error", (error) => {
@@ -13,9 +15,9 @@ const server = app
   });
 
 process.on('SIGTERM', () => {
-  debug('SIGTERM signal received: closing HTTP server')
+  console.log('SIGTERM signal received: closing HTTP server')
   server.close(() => {
-    debug('HTTP server closed')
+    console.log('HTTP server closed')
   })
 })
 
