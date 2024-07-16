@@ -5,7 +5,7 @@ const port = process.env.PORT || 3001;
 
 app.get("/", (req: Request, res: Response) => res.type("html").send(html));
 
-app.get("/healthz", (req: Request, res: Response) => res.status(200).send('Healthy!');;
+app.get("/healthz", (req: Request, res: Response) => res.status(200).send('Healthy!'));
 
 const server = app
   .listen(port, () => console.log(`Example app listening on port ${port}!`))
@@ -15,11 +15,11 @@ const server = app
   });
 
 process.on('SIGTERM', () => {
-  console.log('SIGTERM signal received: closing HTTP server')
+  console.log('SIGTERM signal received: closing HTTP server');
   server.close(() => {
     console.log('HTTP server closed')
-  })
-})
+  });
+});
 
 initCrons();
 
