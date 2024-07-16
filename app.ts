@@ -12,6 +12,13 @@ const server = app
     throw new Error(error.message);
   });
 
+process.on('SIGTERM', () => {
+  debug('SIGTERM signal received: closing HTTP server')
+  server.close(() => {
+    debug('HTTP server closed')
+  })
+})
+
 initCrons();
 
 const html = `
