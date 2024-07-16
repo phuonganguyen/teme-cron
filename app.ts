@@ -12,9 +12,6 @@ const server = app
     throw new Error(error.message);
   });
 
-server.keepAliveTimeout = 120 * 1000;
-server.headersTimeout = 120 * 1000;
-
 initCrons();
 
 const html = `
