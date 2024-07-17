@@ -1,5 +1,3 @@
-import cron from "node-cron";
-import db from "./firebase";
 import {
   collection,
   doc,
@@ -9,6 +7,9 @@ import {
   Timestamp,
   updateDoc,
 } from "firebase/firestore";
+import cron from "node-cron";
+
+import db from "./firebase";
 
 const energyByLevel: { [level: number]: number } = {
   1: 1000,
@@ -32,13 +33,11 @@ const resetUserEnergy = async () => {
   try {
     const querySnapshot = await getDocs(collection(db, "users"));
     querySnapshot.forEach(async (userDoc) => {
-      const level = userDoc.data().level;
-      const energy = energyByLevel[level];
-      console.log(userDoc.id, " => ", energy);
-
       const userEnergyRef = doc(db, "energies", userDoc.id);
       const userEnergyDoc = await getDoc(userEnergyRef);
       if (userEnergyDoc.exists()) {
+        const level = userEnergyDoc.data().level;
+        const energy = energyByLevel[level];
         await updateDoc(userEnergyRef, {
           energy: energy,
           time: Timestamp.fromDate(new Date()),
@@ -46,7 +45,11 @@ const resetUserEnergy = async () => {
       } else {
         await setDoc(
           userEnergyRef,
-          { energy: energy, time: Timestamp.fromDate(new Date()) },
+          {
+            level: 1,
+            energy: energyByLevel[1],
+            time: Timestamp.fromDate(new Date()),
+          },
           { merge: true }
         );
       }
