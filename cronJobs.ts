@@ -65,7 +65,7 @@ const initCrons = async () => {
     console.log("running a task every minute");
   });
 
-  cron.schedule("0 */2 * * *", async () => {
+  cron.schedule("* * * * *", async () => {
     console.log("**Reset User Energy**");
     await resetUserEnergy();
   });
