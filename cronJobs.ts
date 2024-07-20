@@ -59,8 +59,23 @@ const resetUserEnergy = async () => {
   }
 };
 
+const resetEarnPerHour = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(db, "users"));
+    querySnapshot.forEach(async (userDoc) => {
+      await updateDoc(userDoc.ref, { earnedPerHour: false });
+    });
+  } catch (ex) {
+    console.log(ex);
+  }
+};
+
 const initCrons = async () => {
   console.log("Init Crons");
+  cron.schedule("* * * * *", async () => {
+    console.log("**Reset Earn Per Hour**");
+    await resetEarnPerHour();
+  });
   cron.schedule("0 */2 * * *", async () => {
     console.log("**Reset User Energy**");
     await resetUserEnergy();

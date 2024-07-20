@@ -59,8 +59,23 @@ const resetUserEnergy = () => __awaiter(void 0, void 0, void 0, function* () {
         console.log(ex);
     }
 });
+const resetEarnPerHour = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const querySnapshot = yield (0, firestore_1.getDocs)((0, firestore_1.collection)(firebase_1.default, "users"));
+        querySnapshot.forEach((userDoc) => __awaiter(void 0, void 0, void 0, function* () {
+            yield (0, firestore_1.updateDoc)(userDoc.ref, { earnedPerHour: false });
+        }));
+    }
+    catch (ex) {
+        console.log(ex);
+    }
+});
 const initCrons = () => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Init Crons");
+    node_cron_1.default.schedule("* * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
+        console.log("**Reset Earn Per Hour**");
+        yield resetEarnPerHour();
+    }));
     node_cron_1.default.schedule("0 */2 * * *", () => __awaiter(void 0, void 0, void 0, function* () {
         console.log("**Reset User Energy**");
         yield resetUserEnergy();
