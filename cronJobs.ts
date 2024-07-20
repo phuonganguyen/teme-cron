@@ -72,7 +72,7 @@ const resetEarnPerHour = async () => {
 
 const initCrons = async () => {
   console.log("Init Crons");
-  cron.schedule("* * * * *", async () => {
+  cron.schedule("0 */1 * * *", async () => {
     console.log("**Reset Earn Per Hour**");
     await resetEarnPerHour();
   });

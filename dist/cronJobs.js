@@ -72,7 +72,7 @@ const resetEarnPerHour = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 const initCrons = () => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Init Crons");
-    node_cron_1.default.schedule("* * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
+    node_cron_1.default.schedule("0 */1 * * *", () => __awaiter(void 0, void 0, void 0, function* () {
         console.log("**Reset Earn Per Hour**");
         yield resetEarnPerHour();
     }));
